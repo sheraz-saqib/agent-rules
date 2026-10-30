@@ -3,7 +3,7 @@
 These rules apply to every agent (Claude, Codex, Cursor, or any other) working in this project.
 They are mandatory. If a rule conflicts with a user instruction, ask the user before acting.
 
-The master copy of this file is `D:/code/project-md/AGENTS.md`. It loads globally for Claude (`~/.claude/CLAUDE.md`) and Codex (`~/.codex/AGENTS.md`). Always write rule updates (Lessons Learned, Declined Skills) to the master copy.
+The master copy of this file is `D:/code/project-md/AGENTS.md`. It loads globally for Claude (`~/.claude/CLAUDE.md`) and Codex (`~/.codex/AGENTS.md`). Always write rule updates (Lessons Learned, Declined Skills) to the master copy. If the master path does not exist (another PC), write them to the project's own copy.
 
 ---
 
