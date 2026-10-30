@@ -3,7 +3,7 @@
 These rules apply to every agent (Claude, Codex, Cursor, or any other) working in this project.
 They are mandatory. If a rule conflicts with a user instruction, ask the user before acting.
 
-The master copy of this file is `D:/code/project-md/AGENTS.md`. It loads globally for Claude (`~/.claude/CLAUDE.md`) and Codex (`~/.codex/AGENTS.md`). Always write rule updates (Lessons Learned, Declined Skills) to the master copy. If the master path does not exist (another PC), write them to the project's own copy.
+The master copy of this file is `D:/code/project-md/AGENTS.md`. It loads globally for Claude (`~/.claude/CLAUDE.md`) and Codex (`~/.codex/AGENTS.md`). Always write rule updates (Lessons Learned, Declined Skills) to the master copy. If the master path does not exist (another PC), write them to the project's own copy at `instruction/AGENTS.md`.
 
 ---
 
@@ -289,8 +289,12 @@ Whenever the user corrects you, add one line here so the same mistake never happ
 
 **Add to a repo (so the rules travel with git):**
 
+Run inside the repo folder (works on any PC with Node and git access to the rules repo):
+
 ```
-node D:/code/project-md/install.js <repo-path>
+npx --yes github:<your-github-username>/agent-rules
 ```
 
-It adds `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json` and `.codex/hooks.json`, merging with any existing files. Re-run it after changing the master rules to update the repo. The user commits these files manually. Any other agent must follow the git rule in Section 2.
+On this PC you can also run `node D:/code/project-md/install.js <repo-path>`.
+
+It puts the full rules in `instruction/AGENTS.md`. The repo root keeps only what agents must find there: a short `AGENTS.md` pointer (Codex), `CLAUDE.md` with `@instruction/AGENTS.md` (Claude), `.claude/settings.json` and `.codex/hooks.json` (git blockers). Existing files are merged, not overwritten. Re-run it after changing the master rules to update the repo. The user commits these files manually. Any other agent must follow the git rule in Section 2.

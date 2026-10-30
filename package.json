@@ -1,0 +1,15 @@
+{
+  "name": "agent-rules",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Production rules and git blocker for Claude Code and Codex",
+  "bin": {
+    "agent-rules": "install.js"
+  },
+  "files": [
+    "install.js",
+    "AGENTS.md",
+    ".claude/settings.json",
+    ".codex/hooks.json"
+  ]
+}

@@ -1,11 +1,12 @@
+#!/usr/bin/env node
 // Copies the agent rules and git blocker into a repo. Safe to re-run: merges existing files instead of overwriting.
-// Usage: node D:/code/project-md/install.js <repo-path>
+// Usage: npx github:<user>/<repo> [repo-path]   (defaults to the current folder)
 const fs = require('fs');
 const path = require('path');
 
-const repo = process.argv[2];
-if (!repo || !fs.existsSync(repo)) {
-  console.error('Usage: node install.js <repo-path>');
+const repo = process.argv[2] || process.cwd();
+if (!fs.existsSync(repo)) {
+  console.error(`Folder not found: ${repo}`);
   process.exit(1);
 }
 const template = __dirname;
@@ -19,13 +20,25 @@ const addHookOnce = (groups, group) => {
   return groups.some(g => g.hooks.some(h => h.command === command)) ? groups : [...groups, group];
 };
 
-// AGENTS.md: the template is the source of truth.
-fs.copyFileSync(path.join(template, 'AGENTS.md'), path.join(repo, 'AGENTS.md'));
+// instruction/AGENTS.md: full rules, the template is the source of truth.
+const rulesText = fs.readFileSync(path.join(template, 'AGENTS.md'), 'utf8');
+fs.mkdirSync(path.join(repo, 'instruction'), { recursive: true });
+fs.writeFileSync(path.join(repo, 'instruction', 'AGENTS.md'), rulesText);
 
-// CLAUDE.md: keep existing content, make sure it imports AGENTS.md.
+// Root AGENTS.md: short pointer for Codex. Replaces an old full copy, keeps a repo's own content.
+const pointer = '# Agent Rules\n\nBefore any work, read `instruction/AGENTS.md` in full and follow every rule in it.\n';
+const agentsMd = path.join(repo, 'AGENTS.md');
+const agentsText = fs.existsSync(agentsMd) ? fs.readFileSync(agentsMd, 'utf8') : '';
+const isOldFullCopy = agentsText.startsWith('# AGENTS.md: Production Rules');
+if (!agentsText || isOldFullCopy) fs.writeFileSync(agentsMd, pointer);
+else if (!agentsText.includes('instruction/AGENTS.md')) fs.writeFileSync(agentsMd, pointer + '\n' + agentsText);
+
+// Root CLAUDE.md: keep existing content, make sure it imports instruction/AGENTS.md.
 const claudeMd = path.join(repo, 'CLAUDE.md');
-const claudeText = fs.existsSync(claudeMd) ? fs.readFileSync(claudeMd, 'utf8') : '';
-if (!claudeText.includes('@AGENTS.md')) fs.writeFileSync(claudeMd, '@AGENTS.md\n' + (claudeText ? '\n' + claudeText : ''));
+const claudeText = (fs.existsSync(claudeMd) ? fs.readFileSync(claudeMd, 'utf8') : '').replace(/^@AGENTS\.md\r?\n?/m, '').trim();
+if (!claudeText.includes('@instruction/AGENTS.md')) {
+  fs.writeFileSync(claudeMd, '@instruction/AGENTS.md\n' + (claudeText ? '\n' + claudeText + '\n' : ''));
+}
 
 // .claude/settings.json: merge allow/deny rules and the hook.
 const claudeTemplate = readJson(path.join(template, '.claude', 'settings.json'));
