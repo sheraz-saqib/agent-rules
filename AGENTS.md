@@ -5,6 +5,46 @@ They are mandatory. If a rule conflicts with a user instruction, ask the user be
 
 ---
 
+## Before You Start: Required Skills
+
+At the start of every session, before any other work, check that these skills are installed and active, then follow them for the whole session.
+
+| Skill | Why | Claude Code install | Codex install |
+|---|---|---|---|
+| **Ponytail** | Least code, no over-engineering, fewer tokens | `/plugin marketplace add DietrichGebert/ponytail` then `/plugin install ponytail@ponytail` | `/plugins`, search "ponytail", install |
+| **Superpowers** | Senior engineer workflow: brainstorm, plan, TDD, systematic debugging | `/plugin install superpowers@claude-plugins-official` (fallback: `/plugin marketplace add obra/superpowers-marketplace` then `/plugin install superpowers@superpowers-marketplace`) | `/plugins`, search "superpowers", install |
+| **Caveman** | Short chat replies, far fewer output tokens | `/plugin marketplace add JuliusBrussee/caveman` then `/plugin install caveman@caveman` | `/plugins`, search "caveman", install |
+| **Frontend Design** | High-quality, polished UI instead of generic layouts | `/plugin install frontend-design@claude-plugins-official` | Not available; follow Sections 6 to 8 |
+
+### Extra Skills For Codex
+
+Codex uses these in addition to the table above. Install inside Codex with `$skill-installer <name>`; use one with `$<name>` in the prompt. Restart Codex if a new skill does not appear in `/skills`.
+
+| Skill | When to use it |
+|---|---|
+| `playwright` | After every frontend module: test the flow in a real browser like a user (Section 11). |
+| `security-best-practices` | After every backend module: run `$security-best-practices` on the new code (Section 10, Security). It only runs when called by name. |
+| `security-threat-model` | For new modules with auth, payments or uploads: list how a user could break the system (Section 11). |
+| `gh-fix-ci` | When a GitHub Actions check fails. |
+| `sentry` | Only if the project uses Sentry: triage production errors. |
+
+**Never install or use `yeet`.** It commits and opens pull requests, which breaks the git rule in Section 2.
+
+Rules:
+
+- **Missing skill:** warn the user once at the start, for example: "⚠️ Superpowers is not installed. Should I install it?" Then continue with the task.
+- **User says "install it":** do the full setup yourself: add the marketplace, install the plugin, confirm it appears in your skills list, and tell the user if a restart is needed.
+- **If a plugin command is not available to you:** give the user the exact commands to paste.
+- **User says they do not want a skill:** add it to "Declined Skills" below, and also to your global instruction file (`~/.claude/CLAUDE.md` for Claude, `~/.codex/AGENTS.md` for Codex). Never mention or suggest that skill again, in any project.
+- **Caveman applies to chat replies only.** Code, comments, UI text, docs and the end-of-task summary keep full, correct English.
+- If a skill conflicts with a rule in this file, this file wins.
+
+### Declined Skills
+
+- (none yet)
+
+---
+
 ## 1. Workflow And Communication
 
 - **Never guess.** If anything is unclear, stop and ask the user what they want. Do not assume.
