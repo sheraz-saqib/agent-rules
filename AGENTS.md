@@ -287,4 +287,10 @@ Whenever the user corrects you, add one line here so the same mistake never happ
 - Claude: `~/.claude/CLAUDE.md` imports this file; `~/.claude/settings.json` has the git blocker hook and deny rules.
 - Codex: `~/.codex/AGENTS.md` points to this file; `~/.codex/hooks.json` has the git blocker hook. Run `/hooks` in Codex once and trust it.
 
-**On another PC, or to share with a team:** copy `AGENTS.md`, `CLAUDE.md`, the `.claude/` folder and the `.codex/` folder into the project root. Any other agent must follow the git rule in Section 2.
+**Add to a repo (so the rules travel with git):**
+
+```
+node D:/code/project-md/install.js <repo-path>
+```
+
+It adds `AGENTS.md`, `CLAUDE.md`, `.claude/settings.json` and `.codex/hooks.json`, merging with any existing files. Re-run it after changing the master rules to update the repo. The user commits these files manually. Any other agent must follow the git rule in Section 2.
