@@ -1,0 +1,18 @@
+{
+  "description": "Blocks agents from running git commit or git push.",
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "^Bash$",
+        "hooks": [
+          {
+            "type": "command",
+            "statusMessage": "Checking git command",
+            "timeout": 30,
+            "command": "node -e \"let d='';process.stdin.on('data',c=>d+=c).on('end',()=>{const c=(JSON.parse(d).tool_input||{}).command||'';if(/\\bgit\\s+(commit|push)\\b/.test(c)){console.error('Blocked: agents must never commit or push. The user does this manually.');process.exit(2)}})\""
+          }
+        ]
+      }
+    ]
+  }
+}
