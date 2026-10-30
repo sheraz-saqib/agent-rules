@@ -292,7 +292,7 @@ Whenever the user corrects you, add one line here so the same mistake never happ
 Run inside the repo folder (works on any PC with Node and git access to the rules repo):
 
 ```
-npx --yes github:<your-github-username>/agent-rules
+npx --yes github:sheraz-saqib/agent-rules
 ```
 
 On this PC you can also run `node D:/code/project-md/install.js <repo-path>`.

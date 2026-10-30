@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Copies the agent rules and git blocker into a repo. Safe to re-run: merges existing files instead of overwriting.
-// Usage: npx github:<user>/<repo> [repo-path]   (defaults to the current folder)
+// Usage: npx github:sheraz-saqib/agent-rules [repo-path]   (defaults to the current folder)
 const fs = require('fs');
 const path = require('path');
 
