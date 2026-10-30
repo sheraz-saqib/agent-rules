@@ -3,6 +3,8 @@
 These rules apply to every agent (Claude, Codex, Cursor, or any other) working in this project.
 They are mandatory. If a rule conflicts with a user instruction, ask the user before acting.
 
+The master copy of this file is `D:/code/project-md/AGENTS.md`. It loads globally for Claude (`~/.claude/CLAUDE.md`) and Codex (`~/.codex/AGENTS.md`). Always write rule updates (Lessons Learned, Declined Skills) to the master copy.
+
 ---
 
 ## Before You Start: Required Skills
@@ -35,7 +37,7 @@ Rules:
 - **Missing skill:** warn the user once at the start, for example: "⚠️ Superpowers is not installed. Should I install it?" Then continue with the task.
 - **User says "install it":** do the full setup yourself: add the marketplace, install the plugin, confirm it appears in your skills list, and tell the user if a restart is needed.
 - **If a plugin command is not available to you:** give the user the exact commands to paste.
-- **User says they do not want a skill:** add it to "Declined Skills" below, and also to your global instruction file (`~/.claude/CLAUDE.md` for Claude, `~/.codex/AGENTS.md` for Codex). Never mention or suggest that skill again, in any project.
+- **User says they do not want a skill:** add it to "Declined Skills" below, in the master file `D:/code/project-md/AGENTS.md`. Never mention or suggest that skill again, in any project.
 - **Caveman applies to chat replies only.** Code, comments, UI text, docs and the end-of-task summary keep full, correct English.
 - If a skill conflicts with a rule in this file, this file wins.
 
@@ -47,6 +49,8 @@ Rules:
 
 ## 1. Workflow And Communication
 
+- **Chat language:** reply in English by default. If the user asks for Roman Urdu or any other language, use that language in chat from then on.
+- **Code language:** code, comments, commit-ready text, docs and UI text are always in English, whatever the chat language is.
 - **Never guess.** If anything is unclear, stop and ask the user what they want. Do not assume.
 - Before building a module, think it through: read the related code, ask yourself what can go wrong, then build.
 - Break every request into small bullet points and solve them one by one. If a module needs real planning, switch to plan mode first.
@@ -276,9 +280,11 @@ Whenever the user corrects you, add one line here so the same mistake never happ
 
 ---
 
-## 14. Setup For A New Project
+## 14. Setup
 
-1. Copy `AGENTS.md`, `CLAUDE.md`, the `.claude/` folder and the `.codex/` folder into the project root.
-2. `.claude/settings.json` is the git blocker for Claude Code. It blocks `git commit` and `git push` with a hook and a deny rule, and lets normal read, lint, test and build commands run without asking.
-3. `.codex/hooks.json` is the same git blocker for Codex. Codex loads project hooks only after the project is trusted, so run `/hooks` in Codex once and trust it.
-4. Any other agent must follow the git rule in Section 2.
+**On this PC (already done, global):**
+
+- Claude: `~/.claude/CLAUDE.md` imports this file; `~/.claude/settings.json` has the git blocker hook and deny rules.
+- Codex: `~/.codex/AGENTS.md` points to this file; `~/.codex/hooks.json` has the git blocker hook. Run `/hooks` in Codex once and trust it.
+
+**On another PC, or to share with a team:** copy `AGENTS.md`, `CLAUDE.md`, the `.claude/` folder and the `.codex/` folder into the project root. Any other agent must follow the git rule in Section 2.
