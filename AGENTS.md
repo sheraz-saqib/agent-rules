@@ -110,6 +110,14 @@ Never use icons or emojis inside code or code comments.
 
 The frontend and the backend both use a feature-based structure. Each feature owns its routes, components, services, types and tests.
 
+- **File and folder names are kebab-case** in the frontend and the backend (`login-form.tsx`, `create-user.dto.ts`). Component and class names inside the code stay PascalCase (`LoginForm`).
+- Every hook file starts with `use-` (`use-finish-sign-in.ts`).
+- Import with the `@/` path alias, never with long relative paths like `../../../`.
+- No barrel files: do not re-export a folder through an `index.ts`. Import each file directly.
+- Tests live in the feature's own `__tests__/` folder.
+- No circular imports, in the frontend or the backend. A feature never imports from another feature's private folders (`_components/`, `_lib/`); move shared code to the global folders.
+- Backend: a module never uses another module's repository directly. It uses that module's exported service. If two modules need each other, move the shared part into a third module. Two-way TypeORM entity relations are fine with `() => Entity` and `Relation<>`.
+
 ### Frontend Structure
 
 **Next.js (App Router):**
@@ -120,13 +128,39 @@ app/
     login/page.tsx
     register/page.tsx
     _components/           # components used only inside (auth)
-      LoginForm.tsx
+      login-form.tsx
       _widgets/            # sub-components of the components above
-        PasswordField.tsx
+        password-field.tsx
 components/                # global components used in more than one feature
 ```
 
 **React + Vite:** use the same idea with `src/features/auth/` (pages, `_components/`, `_widgets/`) and a global `src/components/` folder.
+
+- Every global component gets its own folder (for example `components/button/`), which holds the component and its own types or helpers.
+- When a feature has many components, group them in sub-folders of `_components/` (for example `_components/reader/`). The group's main (parent) component sits directly in the group folder, never inside `_widgets/`, so it is clear which file is the entry point. Only its smaller pieces go in that group's `_widgets/`:
+  ```
+  _components/
+    reader/
+      book-reader.tsx      # main component of the group
+      _widgets/
+        turn-button.tsx    # pieces used only by book-reader
+  ```
+- Hooks and helpers used by only one feature go in that feature's `_lib/` folder (for example `(auth)/_lib/`). The global `hooks/` and `utils/` folders are only for code shared by more than one feature.
+
+**Redux structure:**
+
+```
+redux/
+  store.ts
+  provider.tsx
+  hooks.ts                 # typed useAppDispatch and useAppSelector
+  base-query.ts            # one shared RTK Query base query
+  features/
+    auth/                  # one folder per feature
+      auth-api.ts          # RTK Query endpoints
+      auth-slice.ts        # only if the feature needs client state
+      auth-types.ts
+```
 
 ### Backend Structure (NestJS)
 
