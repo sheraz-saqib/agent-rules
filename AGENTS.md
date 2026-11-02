@@ -53,7 +53,7 @@ Rules:
 - **Code language:** code, comments, commit-ready text, docs and UI text are always in English, whatever the chat language is.
 - **Never guess.** If anything is unclear, stop and ask the user what they want. Do not assume.
 - Before building a module, think it through: read the related code, ask yourself what can go wrong, then build.
-- Break every request into small bullet points and solve them one by one. If a module needs real planning, switch to plan mode first.
+- Break every request into small bullet points and solve them one by one. For every feature, create a todo list of small tasks first, and mark each one done as you finish it. If a module needs real planning, switch to plan mode first.
 - When you join an existing project, review it and list what should be fixed or refactored. Change nothing until the user gives permission.
 - Write code like a senior engineer would: clean, minimal, and easy for a human to change later without any tooling.
 - After building a module, test it like a real user and read the logs. Run lint and type checks as needed, but run the **build only once**, at the end of the whole task.
@@ -99,7 +99,7 @@ Never use icons or emojis inside code or code comments.
 - Follow clean code and SOLID principles. Keep modules loosely coupled.
 - Write the least code that does the job well. Remove dead code.
 - Choose algorithms and data structures with low time complexity. Avoid nested loops over large data and repeated work.
-- Comments: only when the code cannot explain itself, and **2 lines maximum**. No long comment blocks.
+- Comments: only when the code cannot explain itself, and **2 lines maximum**. No long comment blocks. This applies every time you build a feature or edit any code, including existing files you touch.
 - Put reusable helper functions in a `utils/` folder. Do not repeat helpers across files.
 
 ---
@@ -128,6 +128,35 @@ components/                # global components used in more than one feature
 
 **React + Vite:** use the same idea with `src/features/auth/` (pages, `_components/`, `_widgets/`) and a global `src/components/` folder.
 
+### Backend Structure (NestJS)
+
+```
+src/
+  main.ts
+  app.module.ts
+  configs/                 # one config file per area (app.config.ts, database.config.ts)
+  database/
+    data-source.ts
+    migrations/
+    seeds/
+  common/                  # code shared by more than one module
+    guards/  filters/  decorators/  interceptors/  enums/  interfaces/  constants/
+  utils/                   # one folder per helper (utils/mail/, utils/tokens/)
+  modules/
+    users/                 # one folder per feature
+      users.module.ts
+      controllers/users.controller.ts
+      services/users.service.ts
+      dto/create-user.dto.ts
+      entities/user.entity.ts
+      queue/               # BullMQ processors of this feature
+      __tests__/users.service.spec.ts
+```
+
+- Every new feature gets its own folder in `modules/` (for example `modules/users/`, `modules/orders/`), with its own `<feature>.module.ts`. Never put a feature's files in another feature's folder.
+- Create only the sub-folders a feature actually needs.
+- When a feature grows large, split it into sub-features inside its folder (`modules/orders/payments/`), each with the same structure.
+
 ### Component Rules
 
 - One component per file. Always.
@@ -140,6 +169,7 @@ components/                # global components used in more than one feature
 ## 6. Styling And Theme
 
 - Use **Tailwind CSS** for all styling.
+- **Built-in classes first:** use Tailwind's built-in utility classes as much as possible. Do not create custom classes (`@apply`, custom CSS classes, or arbitrary values like `w-[13.7rem]`) when a built-in class does the job. If the design value is only slightly off from a built-in class (for example 19 vs 20), use the nearest built-in class: use `text-xs` (12px) instead of `text-[11px]`. Only the theme color variables below are allowed as custom additions.
 - **Colors:**
   - If Tailwind already has the color, use the Tailwind class.
   - Use CSS variables only for theme values: brand colors, border colors, border radius, and every value that changes between light and dark mode.
@@ -190,6 +220,11 @@ components/                # global components used in more than one feature
 - Never close on an outside click (only via the close button, cancel, or Escape).
 - The header and the action footer are always sticky; only the body scrolls.
 
+### Forms
+
+- Build every form with `react-hook-form` and validate it with a `zod` schema on the frontend too, not only on the backend.
+- Show each error next to its field, and disable the submit button while the request is running.
+
 ### Other Components
 
 - **Date picker:** shadcn/ui date picker.
@@ -210,6 +245,7 @@ components/                # global components used in more than one feature
 - **State:** Redux Toolkit. **Data fetching:** RTK Query. No other state or fetch libraries.
 - Enable the **React Compiler**. Prevent unnecessary re-renders.
 - Make sure no API is called more than needed: no duplicate calls, no request loops, and proper caching and tag invalidation in RTK Query.
+- Debounce every search input (about 300ms) so the API is not called on every key press.
 - **Next.js:** render on the server wherever possible. **Vite:** lazy-load routes with `React.lazy`.
 - Split code into small chunks so the app stays light.
 - After a new deploy, the app must load the new chunks right away. Catch chunk-load errors and reload the page once, so users never see a broken page or a 500 error.
@@ -231,6 +267,16 @@ components/                # global components used in more than one feature
 - Use a global exception filter:
   - **Development:** full error details and stack traces.
   - **Production:** only a safe, user-friendly message. Never leak stack traces, queries, or internal system details.
+
+### API Format
+
+- Every response uses one shape, set by a global interceptor: `{ data, message, meta }` (`meta` holds pagination).
+- Use NestJS URI versioning (`/v1/...`) and document every route with `@nestjs/swagger`.
+
+### Config And Logging
+
+- Validate `.env` at startup with `@nestjs/config` and a `class-validator` schema. If a key is missing or invalid, the app must not start.
+- Use `nestjs-pino` for structured logs. Never use `console.log` in backend code.
 
 ### Security
 
