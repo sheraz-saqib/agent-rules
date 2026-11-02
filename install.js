@@ -49,7 +49,9 @@ for (const key of ['allow', 'deny']) {
   claudeSettings.permissions[key] = [...new Set([...(claudeSettings.permissions[key] || []), ...claudeTemplate.permissions[key]])];
 }
 claudeSettings.hooks = claudeSettings.hooks || {};
-claudeSettings.hooks.PreToolUse = addHookOnce(claudeSettings.hooks.PreToolUse || [], claudeTemplate.hooks.PreToolUse[0]);
+for (const event of ['PreToolUse', 'SessionStart']) {
+  claudeSettings.hooks[event] = addHookOnce(claudeSettings.hooks[event] || [], claudeTemplate.hooks[event][0]);
+}
 writeJson(claudeSettingsPath, claudeSettings);
 
 // .codex/hooks.json: merge the hook.
@@ -57,7 +59,9 @@ const codexTemplate = readJson(path.join(template, '.codex', 'hooks.json'));
 const codexHooksPath = path.join(repo, '.codex', 'hooks.json');
 const codexHooks = readJson(codexHooksPath, { description: codexTemplate.description, hooks: {} });
 codexHooks.hooks = codexHooks.hooks || {};
-codexHooks.hooks.PreToolUse = addHookOnce(codexHooks.hooks.PreToolUse || [], codexTemplate.hooks.PreToolUse[0]);
+for (const event of ['PreToolUse', 'SessionStart']) {
+  codexHooks.hooks[event] = addHookOnce(codexHooks.hooks[event] || [], codexTemplate.hooks[event][0]);
+}
 writeJson(codexHooksPath, codexHooks);
 
 console.log(`Installed agent rules in ${path.resolve(repo)}`);

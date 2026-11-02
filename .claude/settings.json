@@ -26,6 +26,18 @@
           }
         ]
       }
+    ],
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 10,
+            "command": "node -e \"const fs=require('fs'),path=require('path');const file=path.join(process.env.CLAUDE_PROJECT_DIR||process.cwd(),'instruction','AGENTS.md');if(!fs.existsSync(file))process.exit(0);fetch('https://raw.githubusercontent.com/sheraz-saqib/agent-rules/main/AGENTS.md',{signal:AbortSignal.timeout(5000)}).then(r=>r.ok?r.text():'').then(t=>{const norm=s=>s.replace(/\\r\\n/g,'\\n');if(!t||norm(fs.readFileSync(file,'utf8'))===norm(t))return;fs.writeFileSync(file,t);console.log('The agent rules were updated. Read instruction/AGENTS.md again before any work.')}).catch(()=>{})\""
+          }
+        ]
+      }
     ]
   }
 }
