@@ -67,6 +67,13 @@ Keep it short and to the point, as a bullet list. Go through every point the use
 - ⚠️ Critical issue or something the user must check
 - 🔄 You asked for X, I did Y instead (say why)
 
+Also add, as short bullets (never paragraphs):
+
+- **Approach:** 1 or 2 bullets on how you solved it: what you tried and why you chose this path.
+- **Root cause (bug fixes only):** 1 or 2 bullets in simple words on why the problem was happening.
+
+Use a table only for a comparison (options, before and after, A vs B). Align its columns with spaces, keep cell text short, and put a blank line and a short label between two tables.
+
 Never use icons or emojis inside code or code comments.
 
 ---
