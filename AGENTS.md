@@ -184,18 +184,28 @@ src/
     guards/  filters/  decorators/  interceptors/  enums/  interfaces/  constants/
   utils/                   # one folder per helper (utils/mail/, utils/tokens/)
   modules/
-    users/                 # one folder per feature
-      users.module.ts
-      controllers/users.controller.ts
-      services/users.service.ts
-      dto/create-user.dto.ts
+    auth/                  # one folder per feature
+      auth.module.ts       # the only file at the feature root
+      controllers/auth.controller.ts   # in its folder even when it is the only one
+      services/            # more than one file: one sub-folder per file
+        auth/auth.service.ts
+        tokens/tokens.service.ts
+      dto/
+        login/login.dto.ts
+        register/register.dto.ts
       entities/user.entity.ts
+      policies/auth.policy.ts
+      lib/                 # helpers, constants, types and event lists used only by this feature
+      templates/auth-emails.ts         # email templates
       queue/               # BullMQ processors of this feature
-      __tests__/users.service.spec.ts
+      __tests__/auth.service.spec.ts
 ```
 
 - Every new feature gets its own folder in `modules/` (for example `modules/users/`, `modules/orders/`), with its own `<feature>.module.ts`. Never put a feature's files in another feature's folder.
 - Create only the sub-folders a feature actually needs.
+- Every file type has its own folder inside the feature, even when there is only one file of that type: `controllers/`, `services/`, `dto/`, `entities/`, `policies/`, `lib/`, `templates/`, `queue/`, `__tests__/`. Only `<feature>.module.ts` sits at the feature root.
+- When a folder holds more than one file, give each file its own sub-folder named after what it is for: `dto/login/login.dto.ts`, `dto/register/register.dto.ts`, `services/tokens/tokens.service.ts`. A single file stays directly in its folder.
+- Access policies go in `policies/`. Helpers, constants, types and event lists used only by this feature go in `lib/`. Email templates go in `templates/`.
 - When a feature grows large, split it into sub-features inside its folder (`modules/orders/payments/`), each with the same structure.
 
 ### Component Rules
