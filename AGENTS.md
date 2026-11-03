@@ -106,7 +106,7 @@ Never use icons or emojis inside code or code comments.
 - Follow clean code and SOLID principles. Keep modules loosely coupled.
 - Write the least code that does the job well. Remove dead code.
 - Choose algorithms and data structures with low time complexity. Avoid nested loops over large data and repeated work.
-- Comments: only when the code cannot explain itself, and **2 lines maximum**. No long comment blocks. This applies every time you build a feature or edit any code, including existing files you touch.
+- Comments: only when the code cannot explain itself, and **1 line maximum**. No multi-line comment blocks. This applies every time you build a feature or edit any code, including existing files you touch.
 - Put reusable helper functions in a `utils/` folder. Do not repeat helpers across files.
 
 ---
@@ -364,6 +364,7 @@ src/
 Whenever the user corrects you, add one line here so the same mistake never happens again.
 
 - Create only the files the user asked for. Do not scaffold a project, code, or config files unless asked.
+- Comments are 1 line maximum (it was 2 to 3 lines before). Never write multi-line comment blocks.
 
 ---
 
